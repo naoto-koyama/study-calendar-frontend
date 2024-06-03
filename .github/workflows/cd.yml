@@ -1,0 +1,119 @@
+name: '[Production]ECR Push & ECS Deploy Job'
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+env:
+  AWS_REGION: 'ap-northeast-1'
+  ## TODO: Change the ECR_REPOSITORY to your ECR repository name
+  ECR_REPOSITORY: 'ecr-repository-name'
+  ## for memory leak
+  NODE_OPTIONS: '--max-old-space-size=4096'
+
+jobs:
+  pushAndDeploy:
+    name: 'ECR Push & ECS Deploy Job'
+    runs-on: ubuntu-latest
+    environment: production
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Dump GITHUB_REF
+        env:
+          GITHUB_REF: ${{ github.ref }}
+        run: echo "$GITHUB_REF"
+      - name: Dump GITHUB_EVENT_PR_BASE_REF
+        env:
+          GITHUB_EVENT_PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: echo "$GITHUB_EVENT_PR_BASE_REF"
+      - name: Dump GITHUB_EVENT_PR_HEAD_REF
+        env:
+          GITHUB_EVENT_PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: echo "$GITHUB_EVENT_PR_HEAD_REF"
+
+      - name: 'Check out repository code'
+        uses: actions/checkout@v3
+
+      - name: 'Setup Node.js ${{ matrix.node-version }}'
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Configure AWS credentials'
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: 'Login to Amazon ECR'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: 'Build, tag, and push image to Amazon ECR'
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          COMMIT_HASH: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
+          NEXT_PUBLIC_NODE_ENV: ${{ vars.NEXT_PUBLIC_NODE_ENV }}
+        run: |
+          export NODE_OPTIONS=$NODE_OPTIONS
+          SHORT_COMMIT_HASH=$(echo $COMMIT_HASH | cut -c 1-7)
+          if [ $(echo $GITHUB_REF | grep 'main') ]; then
+            IMAGE_TAG=main-$SHORT_COMMIT_HASH
+          else
+            IMAGE_TAG=feature-$SHORT_COMMIT_HASH
+          fi
+          aws ecr list-images --repository-name $ECR_REPOSITORY | jq ".imageIds[].imageTag" > image-list.txt
+          if [ $(cat image-list.txt | grep $IMAGE_TAG) ]; then
+            echo "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG already exists."
+            echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          else
+            echo "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG does not exist."
+            docker build -f Dockerfile \
+              --build-arg NEXT_PUBLIC_NODE_ENV=$NEXT_PUBLIC_NODE_ENV \
+              -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          fi
+
+      - name: '[Production]create task definition'
+        id: prd-create-task
+        if: ${{ contains(github.ref, 'main') == true }}
+        env:
+          # TODO: Change the task definition name to your task definition name
+          TASK_DEFINITION_NAME: 'task-definition-name'
+        run: |
+          aws ecs describe-task-definition --task-definition $TASK_DEFINITION_NAME | jq ".taskDefinition" > tmp-$TASK_DEFINITION_NAME.json
+          cat tmp-$TASK_DEFINITION_NAME.json | jq "del(.compatibilities)" | jq "del(.taskDefinitionArn)" | jq "del(.requiresAttributes)" | jq "del(.revision)" | jq "del(.status)" | jq "del(.registeredAt)" | jq "del(.registeredBy)" > $TASK_DEFINITION_NAME.json
+          echo "task-path=$TASK_DEFINITION_NAME.json" >> $GITHUB_OUTPUT
+
+      - name: '[Production]Fill in the new image ID in the Amazon ECS task definition'
+        if: ${{ contains(github.ref, 'main') == true }}
+        id: prd-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.prd-create-task.outputs.task-path }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+        env:
+          # TODO: Change the container name to your container name
+          CONTAINER_NAME: 'container-name'
+
+      - name: '[Production]Deploy Amazon ECS task definition'
+        if: ${{ contains(github.ref, 'main') == true }}
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.prd-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+        env:
+          # TODO: Change the service name to your service name
+          ECS_SERVICE: 'service-name'
+          ECS_CLUSTER: 'cluster-name'

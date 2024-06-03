@@ -1,0 +1,28 @@
+name: 'Node.js CI'
+on: push
+
+jobs:
+  lint-check-and-build:
+    name: 'Lint check and build'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: 'Use Node.js package.json'
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: 'package.json'
+
+      - name: 'Install dependencies'
+        run: yarn
+
+      - name: 'Run lint check'
+        run: yarn lint
+      - name: 'Run format check'
+        run: yarn prettier
+
+      - name: 'Run build'
+        run: NODE_OPTIONS='--max-old-space-size=4096' yarn build
