@@ -1,0 +1,7 @@
+mutation createPost($params: CreatePost!) {
+  createPost(input: { params: $params }) {
+    id
+    title
+    body
+  }
+}
