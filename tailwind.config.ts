@@ -15,10 +15,17 @@ const config: Config = {
         sans: ['Google Sans', 'Roboto', 'Arial', 'sans-serif'],
       },
       fontSize: {
+        '11px': '11px',
         '22px': ['22px', {
           lineHeight: '24px',
         }],
+        '26px': ['26px', {
+          lineHeight: '46px',
+        }],
       },
+      width: {
+        '1/7': '14.2857143%',
+      }
     },
   },
   plugins: [],
