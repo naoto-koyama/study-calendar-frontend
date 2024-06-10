@@ -1,14 +1,10 @@
 import React from 'react';
 
-import { Inter } from 'next/font/google';
-
 import { ApolloWrapper } from '@/lib/ApolloWrapper.client';
 
 import type { Metadata } from 'next';
 
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -25,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={inter.className}>
+      <body className='min-h-screen bg-gray-100'>
         <ApolloWrapper>{children}</ApolloWrapper>
       </body>
     </html>
