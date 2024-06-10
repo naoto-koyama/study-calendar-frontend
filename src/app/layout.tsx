@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Header from '@/components/parts/Header/index.client';
 import { ApolloWrapper } from '@/lib/ApolloWrapper.client';
 
 import type { Metadata } from 'next';
@@ -21,7 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className='min-h-screen bg-gray-100'>
+      <body className='min-h-screen'>
+        <Header />
         <ApolloWrapper>{children}</ApolloWrapper>
       </body>
     </html>
