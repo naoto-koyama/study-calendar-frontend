@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         'gray-112-117-122': 'rgb(112, 117, 122)',
+        'rgb-60-64-67': 'rgb(60, 64, 67)',
       },
       fontFamily: {
         sans: ['Google Sans', 'Roboto', 'Arial', 'sans-serif'],
@@ -25,6 +26,7 @@ const config: Config = {
       },
       width: {
         '1/7': '14.2857143%',
+        '115px': '115px',
       }
     },
   },

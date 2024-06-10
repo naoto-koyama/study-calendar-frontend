@@ -1,0 +1,12 @@
+.custom-datepicker-input {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.custom-datepicker-input:focus {
+  outline: none;
+  box-shadow: none;
+}
