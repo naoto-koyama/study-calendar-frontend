@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import DayListItem from '@/Templates/PageTopTemplate/DayList/DayListItem/index.client';
+
+interface DayListProps {
+  onOpenModal: () => void,
+}
 
 export interface TodayInfo {
   year: number;
@@ -22,14 +26,16 @@ const getTodayInfo = (): TodayInfo => {
 const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
 const startDate = 9;
 
-const DayList = () => {
+const DayList: React.FC<DayListProps> = ({ onOpenModal }) => {
   const [todayInfo] = useState<TodayInfo>(getTodayInfo());
 
   return (
     <div className="flex w-full">
       <div className="relative flex items-center justify-center w-16 h-16 mt-3 ml-2 group">
         <button className="flex items-center justify-center w-full h-full rounded-full border bg-opacity-50 bg-white"
-                style={{ boxShadow: '0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15)'}}>
+                style={{ boxShadow: '0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15)'}}
+                onClick={onOpenModal}
+        >
           <svg width="36" height="36" viewBox="0 0 36 36">
             <path fill="#34A853" d="M16 16v14h4V20z"></path>
             <path fill="#4285F4" d="M30 16H20l-4 4h14z"></path>
