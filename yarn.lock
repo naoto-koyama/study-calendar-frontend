@@ -4362,40 +4362,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-nextjs-template@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "graphql-nextjs-template@workspace:."
-  dependencies:
-    "@apollo/client": ^3.10.4
-    "@apollo/experimental-nextjs-app-support": ^0.11.0
-    "@graphql-codegen/cli": 5.0.2
-    "@graphql-codegen/client-preset": 4.2.6
-    "@graphql-codegen/introspection": 4.0.3
-    "@graphql-codegen/typescript": ^4.0.7
-    "@graphql-codegen/typescript-react-apollo": ^4.3.0
-    "@types/node": 20.14.0
-    "@types/react": ^18
-    "@types/react-dom": ^18
-    "@typescript-eslint/eslint-plugin": ^7.11.0
-    "@typescript-eslint/parser": ^7.11.0
-    add: ^2.0.6
-    axios: ^1.7.2
-    eslint: ^8
-    eslint-config-next: 14.2.3
-    graphql: ^16.8.1
-    husky: ^9.0.11
-    lint-staged: ^15.2.5
-    next: 14.2.3
-    postcss: ^8
-    prettier: ^3.3.0
-    react: ^18
-    react-dom: ^18
-    react-hook-form: ^7.51.5
-    tailwindcss: ^3.4.1
-    typescript: 5.4.5
-  languageName: unknown
-  linkType: soft
-
 "graphql-request@npm:^6.0.0":
   version: 6.1.0
   resolution: "graphql-request@npm:6.1.0"
@@ -7268,6 +7234,40 @@ __metadata:
   checksum: 492f73e27268f9b1c122733f28ecb0e7e8d8a531a6662efbd08e22cccb3f9475e90a1b82cab06a392f6afae6d2de636f977e231296400d0ec5304ba70f166443
   languageName: node
   linkType: hard
+
+"study-calendar-frontend@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "study-calendar-frontend@workspace:."
+  dependencies:
+    "@apollo/client": ^3.10.4
+    "@apollo/experimental-nextjs-app-support": ^0.11.0
+    "@graphql-codegen/cli": 5.0.2
+    "@graphql-codegen/client-preset": 4.2.6
+    "@graphql-codegen/introspection": 4.0.3
+    "@graphql-codegen/typescript": ^4.0.7
+    "@graphql-codegen/typescript-react-apollo": ^4.3.0
+    "@types/node": 20.14.0
+    "@types/react": ^18
+    "@types/react-dom": ^18
+    "@typescript-eslint/eslint-plugin": ^7.11.0
+    "@typescript-eslint/parser": ^7.11.0
+    add: ^2.0.6
+    axios: ^1.7.2
+    eslint: ^8
+    eslint-config-next: 14.2.3
+    graphql: ^16.8.1
+    husky: ^9.0.11
+    lint-staged: ^15.2.5
+    next: 14.2.3
+    postcss: ^8
+    prettier: ^3.3.0
+    react: ^18
+    react-dom: ^18
+    react-hook-form: ^7.51.5
+    tailwindcss: ^3.4.1
+    typescript: 5.4.5
+  languageName: unknown
+  linkType: soft
 
 "styled-jsx@npm:5.1.1":
   version: 5.1.1
