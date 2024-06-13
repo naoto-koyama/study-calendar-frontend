@@ -5,8 +5,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 
 import Modal from '@/components/parts/Modal/index.client';
+import { useCreateEventMutation } from '@/generates/graphql';
 import { useYearMonth } from '@/hooks/YearMonthContext';
 import { convertDateFromString, getClosestSunday } from '@/utils/date';
+import {
+  CustomApolloError,
+  defaultFormattedErrors,
+  extractErrorMessages,
+  FormattedError,
+} from '@/utils/error';
 
 import DayList from './DayList/index.client';
 import EventForm, { EventFormData } from './EventForm/index.client';
@@ -19,6 +26,8 @@ const PageTopTemplate: React.FC<PageTopTemplateProps> = ({ searchParams }) => {
   const { setYear, setMonth } = useYearMonth();
   const [startDay, setStartDate] = useState<number>(dayjs().date());
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<FormattedError[]>(defaultFormattedErrors);
+  const [createEventMutation] = useCreateEventMutation();
 
   const closestSunday = useMemo(() => {
     const weekParam = searchParams?.week;
@@ -26,30 +35,35 @@ const PageTopTemplate: React.FC<PageTopTemplateProps> = ({ searchParams }) => {
     return getClosestSunday(date || undefined);
   }, [searchParams]);
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
   useEffect(() => {
     setYear(closestSunday.year());
     setMonth(closestSunday.month() + 1);
     setStartDate(closestSunday.date());
   }, [closestSunday, setYear, setMonth]);
 
-  const handleEventSubmit = async (data: EventFormData) => {
+  const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
+  const handleCloseModal = useCallback(() => setIsModalOpen(false), []);
+
+  const handleEventSubmit = useCallback(async (data: EventFormData) => {
     try {
-      alert('Event data: ' + JSON.stringify(data));
-      // GraphQL mutationの呼び出しをここに追加
-      // await addEvent({ variables: data });
+      await createEventMutation({
+        variables: {
+          params: {
+            ...data,
+          },
+        },
+      });
       handleCloseModal();
     } catch (error) {
-      console.error('Error adding event:', error);
+      setErrorMessages(extractErrorMessages(error as unknown as CustomApolloError));
     }
-  };
+  }, [createEventMutation, handleCloseModal]);
 
   return (
     <>
       <DayList onOpenModal={handleOpenModal} startDay={startDay} />
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} width='30%'>
-        <EventForm onSubmit={handleEventSubmit} />
+        <EventForm onSubmit={handleEventSubmit} errorMessages={errorMessages} />
       </Modal>
     </>
   );

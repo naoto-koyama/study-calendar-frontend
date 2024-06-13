@@ -25,6 +25,8 @@ export interface FormattedError {
   messages: string[];
 }
 
+export const defaultFormattedErrors: FormattedError[] = [{ attribute: '', messages: [] }];
+
 const formatErrorMessage = (error: ErrorDetail): string => {
   const { attribute, code } = error;
 
