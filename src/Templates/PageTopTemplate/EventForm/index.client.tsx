@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import DatePicker from 'react-datepicker';
@@ -30,13 +30,20 @@ interface EventFormProps {
 }
 
 const EventForm: React.FC<EventFormProps> = ({ onSubmit, errorMessages }) => {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<EventFormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<EventFormData>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const now = dayjs();
-    const nearest15Minutes = now.minute(Math.ceil(now.minute() / 15) * 15).second(0);
+    const nearest15Minutes = now
+      .minute(Math.ceil(now.minute() / 15) * 15)
+      .second(0);
     const start = nearest15Minutes.format('HH:mm');
     const end = nearest15Minutes.add(30, 'minute').format('HH:mm');
     setValue('date', dayjs(new Date()).format('YYYY-MM-DD'));
@@ -44,15 +51,18 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, errorMessages }) => {
     setValue('endTime', end);
   }, [setValue]);
 
-  const handleToggleCalendar = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
+  const handleToggleCalendar = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const target = e.target as HTMLElement;
 
-    if (target.classList.contains('react-datepicker__navigation-icon')) {
-      return;
-    }
+      if (target.classList.contains('react-datepicker__navigation-icon')) {
+        return;
+      }
 
-    setIsOpen(prev => !prev);
-  }, []);
+      setIsOpen((prev) => !prev);
+    },
+    []
+  );
 
   const onSubmitHandler: SubmitHandler<EventFormData> = (data) => {
     onSubmit(data);
@@ -74,10 +84,12 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, errorMessages }) => {
           {...register('title', { required: 'タイトルは必須です' })}
           className="w-full p-2 border-b-2 border-gray-300 focus:outline-none"
         />
-        {errors.title && <span className="text-red-500 text-sm">{errors.title.message}</span>}
+        {errors.title && (
+          <span className="text-red-500 text-sm">{errors.title.message}</span>
+        )}
       </div>
       <div className="mb-4 flex items-center space-x-4">
-        <div className="flex-1"  onClick={handleToggleCalendar}>
+        <div className="flex-1" onClick={handleToggleCalendar}>
           <DatePicker
             selected={selectedDate}
             onChange={handleDateChange}
@@ -87,7 +99,9 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, errorMessages }) => {
             onClickOutside={() => setIsOpen(false)}
             open={isOpen}
           />
-          {errors.date && <span className="text-red-500 text-sm">{errors.date.message}</span>}
+          {errors.date && (
+            <span className="text-red-500 text-sm">{errors.date.message}</span>
+          )}
         </div>
         <div className="flex-1">
           <div className="flex space-x-2">
@@ -107,8 +121,15 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, errorMessages }) => {
           </div>
           <datalist id="time-options">
             {Array.from({ length: 96 }, (_, i) => {
-              const time = dayjs().startOf('day').add(i * 15, 'minute').format('HH:mm');
-              return <option key={i} value={time}>{time}</option>;
+              const time = dayjs()
+                .startOf('day')
+                .add(i * 15, 'minute')
+                .format('HH:mm');
+              return (
+                <option key={i} value={time}>
+                  {time}
+                </option>
+              );
             })}
           </datalist>
         </div>
@@ -119,18 +140,29 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, errorMessages }) => {
           className="w-full p-2 hover:bg-gray-200 transition duration-300"
           placeholder="説明を追加"
         />
-        {errors.description && <span className="text-red-500 text-sm">{errors.description.message}</span>}
+        {errors.description && (
+          <span className="text-red-500 text-sm">
+            {errors.description.message}
+          </span>
+        )}
       </div>
       {errorMessages !== defaultFormattedErrors && (
         <div className="mb-4">
           {errorMessages.map(({ attribute, messages }) =>
-            messages.map((errorMessage, index) =>
-              <span key={`${attribute}-${index}`} className="text-red-500 text-sm block">{errorMessage}</span>
-            )
+            messages.map((errorMessage, index) => (
+              <span
+                key={`${attribute}-${index}`}
+                className="text-red-500 text-sm block"
+              >
+                {errorMessage}
+              </span>
+            ))
           )}
         </div>
       )}
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded">保存</button>
+      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+        保存
+      </button>
     </form>
   );
 };

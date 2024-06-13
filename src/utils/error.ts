@@ -25,13 +25,21 @@ export interface FormattedError {
   messages: string[];
 }
 
-export const defaultFormattedErrors: FormattedError[] = [{ attribute: '', messages: [] }];
+export const defaultFormattedErrors: FormattedError[] = [
+  { attribute: '', messages: [] },
+];
 
 const formatErrorMessage = (error: ErrorDetail): string => {
   const { attribute, code } = error;
 
-  if (errorMessages[attribute] && typeof errorMessages[attribute] === 'object') {
-    const attributeMessages = errorMessages[attribute] as Record<string, string>;
+  if (
+    errorMessages[attribute] &&
+    typeof errorMessages[attribute] === 'object'
+  ) {
+    const attributeMessages = errorMessages[attribute] as Record<
+      string,
+      string
+    >;
     if (attributeMessages[code]) {
       return attributeMessages[code];
     }
@@ -49,7 +57,9 @@ const formatErrorMessage = (error: ErrorDetail): string => {
  * @param error カスタムApolloErrorオブジェクト。
  * @returns 属性ごとにグループ化されたフォーマット済みエラーメッセージの配列。
  */
-export const extractErrorMessages = (error: CustomApolloError): FormattedError[] => {
+export const extractErrorMessages = (
+  error: CustomApolloError
+): FormattedError[] => {
   const errorResponse = error.networkError?.result;
 
   if (errorResponse && errorResponse.errors) {
@@ -64,7 +74,7 @@ export const extractErrorMessages = (error: CustomApolloError): FormattedError[]
       }
     });
 
-    return Object.keys(groupedErrors).map(attribute => ({
+    return Object.keys(groupedErrors).map((attribute) => ({
       attribute,
       messages: groupedErrors[attribute],
     }));

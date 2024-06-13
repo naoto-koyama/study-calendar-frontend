@@ -9,9 +9,13 @@ interface YearMonthContextProps {
   setMonth: (month: number) => void;
 }
 
-const YearMonthContext = createContext<YearMonthContextProps | undefined>(undefined);
+const YearMonthContext = createContext<YearMonthContextProps | undefined>(
+  undefined
+);
 
-export const YearMonthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const YearMonthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
 

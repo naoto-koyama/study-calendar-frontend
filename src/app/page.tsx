@@ -5,6 +5,5 @@ interface HomeProps {
 }
 
 export default function Home({ searchParams }: HomeProps) {
-
   return <PageTopTemplate searchParams={searchParams} />;
 }

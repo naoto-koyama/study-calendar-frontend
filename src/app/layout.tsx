@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className='min-h-screen'>
+      <body className="min-h-screen">
         <YearMonthProvider>
           <Header />
           <ApolloWrapper>{children}</ApolloWrapper>

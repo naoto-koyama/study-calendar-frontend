@@ -6,3 +6,4 @@ public
 .eslintrc
 next.config.js
 .env*
+generates
