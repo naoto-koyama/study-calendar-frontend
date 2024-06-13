@@ -1,0 +1,10 @@
+mutation createEvent($params: CreateEvent!) {
+  createEvent(input: { params: $params }) {
+    id
+    title
+    date
+    startTime
+    endTime
+    description
+  }
+}

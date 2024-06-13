@@ -1,7 +1,0 @@
-mutation UpdatePost($params: UpdatePost!) {
-  updatePost(input: { params: $params }) {
-    id
-    title
-    body
-  }
-}

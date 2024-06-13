@@ -13,14 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-  'mutation createPost($params: CreatePost!) {\n  createPost(input: {params: $params}) {\n    id\n    title\n    body\n  }\n}':
-    types.CreatePostDocument,
-  'mutation UpdatePost($params: UpdatePost!) {\n  updatePost(input: {params: $params}) {\n    id\n    title\n    body\n  }\n}':
-    types.UpdatePostDocument,
-  'query GetPost($id: ID!) {\n  post(id: $id) {\n    id\n    title\n    body\n  }\n}':
-    types.GetPostDocument,
-  'query GetPosts {\n  posts {\n    id\n    title\n  }\n}':
-    types.GetPostsDocument,
+  'mutation createEvent($params: CreateEvent!) {\n  createEvent(input: {params: $params}) {\n    id\n    title\n    date\n    startTime\n    endTime\n    description\n  }\n}':
+    types.CreateEventDocument,
 };
 
 /**
@@ -41,26 +35,8 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: 'mutation createPost($params: CreatePost!) {\n  createPost(input: {params: $params}) {\n    id\n    title\n    body\n  }\n}'
-): (typeof documents)['mutation createPost($params: CreatePost!) {\n  createPost(input: {params: $params}) {\n    id\n    title\n    body\n  }\n}'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: 'mutation UpdatePost($params: UpdatePost!) {\n  updatePost(input: {params: $params}) {\n    id\n    title\n    body\n  }\n}'
-): (typeof documents)['mutation UpdatePost($params: UpdatePost!) {\n  updatePost(input: {params: $params}) {\n    id\n    title\n    body\n  }\n}'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: 'query GetPost($id: ID!) {\n  post(id: $id) {\n    id\n    title\n    body\n  }\n}'
-): (typeof documents)['query GetPost($id: ID!) {\n  post(id: $id) {\n    id\n    title\n    body\n  }\n}'];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: 'query GetPosts {\n  posts {\n    id\n    title\n  }\n}'
-): (typeof documents)['query GetPosts {\n  posts {\n    id\n    title\n  }\n}'];
+  source: 'mutation createEvent($params: CreateEvent!) {\n  createEvent(input: {params: $params}) {\n    id\n    title\n    date\n    startTime\n    endTime\n    description\n  }\n}'
+): (typeof documents)['mutation createEvent($params: CreateEvent!) {\n  createEvent(input: {params: $params}) {\n    id\n    title\n    date\n    startTime\n    endTime\n    description\n  }\n}'];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
