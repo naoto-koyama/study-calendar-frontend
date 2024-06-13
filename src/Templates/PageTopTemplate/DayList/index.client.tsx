@@ -6,6 +6,7 @@ import DayListItem from '@/Templates/PageTopTemplate/DayList/DayListItem/index.c
 
 interface DayListProps {
   onOpenModal: () => void,
+  startDay: number,
 }
 
 export interface TodayInfo {
@@ -24,9 +25,8 @@ const getTodayInfo = (): TodayInfo => {
 };
 
 const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-const startDate = 9;
 
-const DayList: React.FC<DayListProps> = ({ onOpenModal }) => {
+const DayList: React.FC<DayListProps> = ({ onOpenModal, startDay }) => {
   const [todayInfo] = useState<TodayInfo>(getTodayInfo());
 
   return (
@@ -52,7 +52,7 @@ const DayList: React.FC<DayListProps> = ({ onOpenModal }) => {
             key={index}
             day={day}
             index={index}
-            startDate={startDate}
+            startDate={startDay}
             todayInfo={todayInfo}
           />
         ))}

@@ -3247,6 +3247,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.11.11":
+  version: 1.11.11
+  resolution: "dayjs@npm:1.11.11"
+  checksum: 84788275aad8a87fee4f1ce4be08861df29687aae6b7b43dd65350118a37dda56772a3902f802cb2dc651dfed447a5a8df62d88f0fb900dba8333e411190a5d5
+  languageName: node
+  linkType: hard
+
 "debounce@npm:^1.2.0":
   version: 1.2.1
   resolution: "debounce@npm:1.2.1"
@@ -7357,6 +7364,7 @@ __metadata:
     "@typescript-eslint/parser": ^7.11.0
     add: ^2.0.6
     axios: ^1.7.2
+    dayjs: ^1.11.11
     eslint: ^8
     eslint-config-next: 14.2.3
     graphql: ^16.8.1

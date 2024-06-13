@@ -1,27 +1,50 @@
 'use client';
 
-import React, { useCallback, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './styles.css';
+
+import dayjs from 'dayjs';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { useYearMonth } from '@/hooks/YearMonthContext';
 
 const Header: React.FC = () => {
   const { year, month, setYear, setMonth } = useYearMonth();
-  const selectedDate = useMemo(() => new Date(year, month - 1), [year, month]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(year, month - 1));
   const [isOpen, setIsOpen] = useState(false);
   const datePickerRef = useRef(null);
 
-  const handleDateChange = useCallback((date: Date) => {
-    setYear(date.getFullYear());
-    setMonth(date.getMonth() + 1);
-    setIsOpen(false);  // カレンダーを閉じる
-  }, [setYear, setMonth]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const handleToggleCalendar = () => {
+  useEffect(() => {
+    setSelectedDate(new Date(year, month - 1));
+  }, [year, month]);
+
+  const handleDateChange = useCallback((date: Date) => {
+    setSelectedDate(date);
+    setYear(dayjs(date).year());
+    setMonth(dayjs(date).month() + 1);
+    setIsOpen(false);
+
+    // クエリパラメータの更新
+    const week = dayjs(date).format('YYYY-M-D');
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set('week', week);
+    router.push(`?${newSearchParams.toString()}`);
+  }, [setYear, setMonth, searchParams, router]);
+
+  const handleToggleCalendar = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+
+    if (target.classList.contains('react-datepicker__navigation-icon')) {
+      return;
+    }
+
     setIsOpen(prev => !prev);
-  };
+  }, []);
 
   return (
     <header className="bg-white border-b border-gray-300 flex items-center p-4 relative">
@@ -35,10 +58,9 @@ const Header: React.FC = () => {
           selected={selectedDate}
           onChange={handleDateChange}
           dateFormat="yyyy年 M月"
-          showMonthYearPicker
-          className="font-sans text-22px text-rgb-60-64-67 w-115px cursor-pointer custom-datepicker-input"
+          className="font-sans text-22px text-rgb-60-64-67 w-124px cursor-pointer custom-datepicker-input"
+          onClickOutside={() => setIsOpen(false)} // カレンダー外をクリックしたら閉じる
           open={isOpen}
-          onClickOutside={() => setIsOpen(false)}  // カレンダー外をクリックしたら閉じる
         />
         <span className="text-gray-112-117-122 text-11px">▼</span>
       </div>
